@@ -26,7 +26,7 @@ namespace DropboxFileExchange
         {
             services.AddScoped<IDropBoxFilesService, DropBoxFilesService>();
             services.AddControllers();
-
+            services.AddSingleton<IConfiguration>(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

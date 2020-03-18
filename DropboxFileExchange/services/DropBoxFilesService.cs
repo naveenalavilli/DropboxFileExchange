@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dropbox.Api;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +10,20 @@ namespace DropboxFileExchange.services
 {
     public class DropBoxFilesService : IDropBoxFilesService
     {
-        public Task<byte[]> GetFile(string Folder, string File)
+        IConfiguration _IConfiguration;
+        public DropBoxFilesService(IConfiguration IConfiguration)
         {
-            return Task.FromResult( Encoding.ASCII.GetBytes("testString"));
+            _IConfiguration = IConfiguration;
+        }
+        public async Task<byte[]> GetFile(string Folder, string File)
+        {
+            string AccessToken = _IConfiguration.GetSection("DropBoxAccessToken").Value;
+
+            using (var dbx = new DropboxClient(AccessToken))
+            using (var response = await dbx.Files.DownloadAsync(Folder + "/" + File))
+            {
+              return await response.GetContentAsByteArrayAsync();
+            }           
         }
 
         public Task WriteFile(string Folder, string File, byte[] Content)

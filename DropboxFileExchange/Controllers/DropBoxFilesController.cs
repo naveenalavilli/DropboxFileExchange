@@ -31,43 +31,31 @@ namespace DropboxFileExchange.Controllers
             _dropBoxFilesService = DropBoxFilesService;
         }
 
-     
+
 
 
 
         [HttpGet]
         [Route(@"~/GetDocument")]
-        public async Task<HttpResponseMessage> GetDocumentAsync(string fileUrl)
+        public async Task<FileResult> GetDocumentAsync(string filename)
         {
             string _contentType;
 
             try
             {
-                string _fileExtension = Path.GetExtension(fileUrl);
-                //only pdf or word documents will ever get uploaded/downloaded
+                string _fileExtension = Path.GetExtension(filename);
+
+                byte[] fileContent = await _dropBoxFilesService.GetFile("", filename);
+
+
                 if (_fileExtension.ToLower() == ".pdf")
                 {
-                    _contentType = "application/pdf";
+                    return File(fileContent, System.Net.Mime.MediaTypeNames.Application.Pdf, filename);
                 }
                 else
                 {
-                    _contentType = "application/msword";
+                    return File(fileContent, System.Net.Mime.MediaTypeNames.Application.Octet, filename);
                 }
-
-                byte[] fileContent =await _dropBoxFilesService.GetFile("files","file.pdf") ;//= new byte(); //= await _siteJobService.GetDocument(fileUrl, iwasUserID);
-
-                HttpResponseMessage response = new HttpResponseMessage();
-                var contentLength = fileContent.Length;
-                response.Content = new StreamContent(new MemoryStream(fileContent));
-                response.Content.Headers.ContentType = new MediaTypeHeaderValue(_contentType);
-                response.Content.Headers.ContentLength = contentLength;
-                ContentDispositionHeaderValue contentDisposition = null;
-                if (ContentDispositionHeaderValue.TryParse("inline; filename=" + "Document" + ".pdf", out contentDisposition))
-                {
-                    response.Content.Headers.ContentDisposition = contentDisposition;
-                }
-
-                return response;
             }
             catch (Exception ex)
             {
