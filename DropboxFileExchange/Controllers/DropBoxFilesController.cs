@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using DropboxFileExchange.services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -39,13 +40,12 @@ namespace DropboxFileExchange.Controllers
         [Route(@"~/GetDocument")]
         public async Task<FileResult> GetDocumentAsync(string filename)
         {
-            string _contentType;
 
             try
             {
                 string _fileExtension = Path.GetExtension(filename);
 
-                byte[] fileContent = await _dropBoxFilesService.GetFile("", filename);
+                byte[] fileContent = await _dropBoxFilesService.GetFile(filename);
 
 
                 if (_fileExtension.ToLower() == ".pdf")
@@ -63,5 +63,28 @@ namespace DropboxFileExchange.Controllers
             }
         }
 
+        public class FileUploadModel
+        {
+            public string FileName { get; set; }
+            public IFormFile File { get; set; }
+
+        }
+        /// <summary>
+                /// Save Document
+                /// </summary>
+                /// <returns></returns>
+        [HttpPost]
+        //[ResponseType(typeof(SiteRelatedServicesDataModel))]
+        [Route(@"~/SaveDocument")]
+        public async Task<ActionResult> SaveUploadedDocumentAsync([FromForm] FileUploadModel uploadedFile)
+        {
+            using (var reader = new StreamReader(uploadedFile.File.OpenReadStream()))
+            {
+                string contentAsString = reader.ReadToEnd();
+                byte[] bytes = new byte[contentAsString.Length * sizeof(char)];
+                await _dropBoxFilesService.WriteFile(uploadedFile.FileName, bytes);
+            }
+            return Ok(new { status = true, message = "File Uploaded Successfully" });
+        }
     }
 }

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace DropboxFileExchange.services
 {
-   public interface IDropBoxFilesService
+    public interface IDropBoxFilesService
     {
-        Task<byte[]> GetFile(string Folder,string File);
-        Task WriteFile(string Folder, string File, byte[] Content);
+        Task<byte[]> GetFile(string File);
+        Task WriteFile(string File, byte[] Content);
     }
 }
