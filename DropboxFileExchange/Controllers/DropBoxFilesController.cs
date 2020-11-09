@@ -63,22 +63,16 @@ namespace DropboxFileExchange.Controllers
             }
         }
 
-        public class FileUploadModel
-        {
-            public string FileName { get; set; }
-            public IFormFile File { get; set; }
-
-        }
         /// <summary>
-                /// Save Document
-                /// </summary>
-                /// <returns></returns>
-        [HttpPost]
-        //[ResponseType(typeof(SiteRelatedServicesDataModel))]
+        /// Save Document
+        /// </summary>
+        /// <param name="uploadedFile"></param>
+        /// <returns></returns>
+        [HttpPost]        
         [Route(@"~/SaveDocument")]
-        public async Task<ActionResult> SaveUploadedDocumentAsync([FromForm] FileUploadModel uploadedFile)
+        public async Task<ActionResult> SaveUploadedDocumentAsync(IFormFile uploadedFile)
         {
-            using (var reader = new StreamReader(uploadedFile.File.OpenReadStream()))
+            using (var reader = new StreamReader(uploadedFile.OpenReadStream()))
             {
                 string contentAsString = reader.ReadToEnd();
                 byte[] bytes = new byte[contentAsString.Length * sizeof(char)];
