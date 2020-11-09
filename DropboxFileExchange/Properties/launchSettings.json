@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "DropBoxFiles",
+      "launchUrl": "index.html",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
       }
@@ -20,7 +20,7 @@
     "DropboxFileExchange": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "DropBoxFiles",
+      "launchUrl": "index.html",
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"

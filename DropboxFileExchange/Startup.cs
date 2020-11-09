@@ -41,7 +41,7 @@ namespace DropboxFileExchange
                     {
                         Name = "Naveen Alavilli",
                         Email = "connect@naveenalavilli.dev",
-                        Url = new Uri("www.naveenalavilli.dev")
+                        Url = new Uri("https://www.naveenalavilli.dev")
                     }
                 });
             });
@@ -62,7 +62,7 @@ namespace DropboxFileExchange
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "DropBox File Upload API Implementation");
                 c.RoutePrefix = "";
             });
-
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();
