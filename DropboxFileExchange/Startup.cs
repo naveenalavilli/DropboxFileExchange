@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace DropboxFileExchange
 {
@@ -27,6 +28,24 @@ namespace DropboxFileExchange
             services.AddScoped<IDropBoxFilesService, DropBoxFilesService>();
             services.AddControllers();
             services.AddSingleton<IConfiguration>(Configuration);
+
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "DropBox API Implementation",
+                    Description = "Implemenation of DropBox API to save/retrieve files.",                                        
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Naveen Alavilli",
+                        Email = "connect@naveenalavilli.dev",
+                        Url = new Uri("www.naveenalavilli.dev")
+                    }
+                });
+            });
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -35,6 +54,14 @@ namespace DropboxFileExchange
             {
                 app.UseDeveloperExceptionPage();
             }
+
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "DropBox File Upload API Implementation");
+                c.RoutePrefix = "";
+            });
 
             app.UseHttpsRedirection();
 
