@@ -91,24 +91,6 @@ namespace DropboxFileExchange.Controllers
             }
             return Ok(new { status = true, message = "File Uploaded Successfully" });
         }
-
-
-        ///// <summary>
-        ///// Save Document
-        ///// </summary>
-        ///// <param name="uploadedFile"></param>
-        ///// <returns></returns>
-        //[HttpPost]        
-        //[Route(@"~/SaveDocument")]
-        //public async Task<ActionResult> SaveUploadedDocumentAsync(IFormFile uploadedFile)
-        //{
-        //    using (var reader = new StreamReader(uploadedFile.OpenReadStream()))
-        //    {
-        //        string contentAsString = reader.ReadToEnd();
-        //        byte[] bytes = new byte[contentAsString.Length * sizeof(char)];
-        //        await _dropBoxFilesService.WriteFile(uploadedFile.FileName, bytes);
-        //    }
-        //    return Ok(new { status = true, message = "File Uploaded Successfully" });
-        //}
+                     
     }
 }
