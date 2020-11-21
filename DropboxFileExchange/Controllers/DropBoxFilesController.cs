@@ -18,11 +18,7 @@ namespace DropboxFileExchange.Controllers
     [Route("[controller]")]
     public class DropBoxFilesController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
+       
         private readonly ILogger<DropBoxFilesController> _logger;
         private IDropBoxFilesService _dropBoxFilesService;
 
@@ -63,22 +59,56 @@ namespace DropboxFileExchange.Controllers
             }
         }
 
-        /// <summary>
-        /// Save Document
-        /// </summary>
-        /// <param name="uploadedFile"></param>
-        /// <returns></returns>
+
+        public class FileUploadModel
+        {
+            public string FileName { get; set; }
+            public IFormFile File { get; set; }
+
+        }
+
+
+        ///// <summary>
+        ///// Save Document
+        ///// </summary>
+        ///// <param name="uploadedFile"></param>
+        ///// <returns></returns>
         [HttpPost]        
         [Route(@"~/SaveDocument")]
-        public async Task<ActionResult> SaveUploadedDocumentAsync(IFormFile uploadedFile)
+        public async Task<ActionResult> SaveUploadedDocumentAsync([FromForm] FileUploadModel uploadedFile)
         {
-            using (var reader = new StreamReader(uploadedFile.OpenReadStream()))
+
+            using (var reader = new StreamReader(uploadedFile.File.OpenReadStream()))
             {
-                string contentAsString = reader.ReadToEnd();
-                byte[] bytes = new byte[contentAsString.Length * sizeof(char)];
+
+                var bytes = default(byte[]);
+                using (var memstream = new MemoryStream())
+                {
+                    reader.BaseStream.CopyTo(memstream);
+                    bytes = memstream.ToArray();
+                }
                 await _dropBoxFilesService.WriteFile(uploadedFile.FileName, bytes);
             }
             return Ok(new { status = true, message = "File Uploaded Successfully" });
         }
+
+
+        ///// <summary>
+        ///// Save Document
+        ///// </summary>
+        ///// <param name="uploadedFile"></param>
+        ///// <returns></returns>
+        //[HttpPost]        
+        //[Route(@"~/SaveDocument")]
+        //public async Task<ActionResult> SaveUploadedDocumentAsync(IFormFile uploadedFile)
+        //{
+        //    using (var reader = new StreamReader(uploadedFile.OpenReadStream()))
+        //    {
+        //        string contentAsString = reader.ReadToEnd();
+        //        byte[] bytes = new byte[contentAsString.Length * sizeof(char)];
+        //        await _dropBoxFilesService.WriteFile(uploadedFile.FileName, bytes);
+        //    }
+        //    return Ok(new { status = true, message = "File Uploaded Successfully" });
+        //}
     }
 }
